@@ -3,6 +3,10 @@ const { computeStatus } = require('../utils/status');
 
 const allowedStatuses = ['Draft', 'Pending Approval', 'Active', 'Expiring Soon', 'Expired', 'Terminated'];
 
+function normalizeStatus(status) {
+  return typeof status === 'string' ? status.trim() : status;
+}
+
 async function logActivity(userId, action, contractId) {
   await pool.query(
     'INSERT INTO activity_logs (user_id, action, contract_id) VALUES ($1, $2, $3)',
@@ -64,11 +68,17 @@ async function createContract(req, res) {
     return res.status(400).json({ message: 'Required fields are missing' });
   }
 
-  if (!allowedStatuses.includes(status)) {
+  const normalizedStatus = normalizeStatus(status);
+
+  if (!allowedStatuses.includes(normalizedStatus)) {
     return res.status(400).json({ message: 'Invalid status value' });
   }
 
-  const computedStatus = computeStatus(end_date, status);
+  const computedStatus = computeStatus(end_date, normalizedStatus);
+
+  if (!allowedStatuses.includes(computedStatus)) {
+    return res.status(400).json({ message: 'Invalid status value' });
+  }
 
   try {
     const result = await pool.query(
@@ -109,13 +119,19 @@ async function updateContract(req, res) {
     }
 
     const current = existing.rows[0];
-    const nextStatus = status || current.status;
+    const normalizedStatus = normalizeStatus(status);
+    const currentStatus = normalizeStatus(current.status);
+    const nextStatus = normalizedStatus || currentStatus;
 
-    if (status && !allowedStatuses.includes(status)) {
+    if (normalizedStatus && !allowedStatuses.includes(normalizedStatus)) {
       return res.status(400).json({ message: 'Invalid status value' });
     }
 
     const computedStatus = computeStatus(end_date || current.end_date, nextStatus);
+
+    if (!allowedStatuses.includes(computedStatus)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
 
     const result = await pool.query(
       `UPDATE contracts SET
