@@ -26,6 +26,8 @@ export default function ContractDetailsPage() {
       <p><strong>Created At:</strong> {new Date(contract.created_at).toLocaleString()}</p>
       <p><strong>Updated At:</strong> {new Date(contract.updated_at).toLocaleString()}</p>
       <p><strong>Created By (user id):</strong> {contract.created_by}</p>
+      <p><strong>Approved By (user id):</strong> {contract.approved_by || '-'}</p>
+      <p><strong>Approved At:</strong> {contract.approved_at ? new Date(contract.approved_at).toLocaleString() : '-'}</p>
       {contract.file_path && (
         <p><a href={`http://localhost:5000/${contract.file_path}`} target="_blank">Open File</a></p>
       )}

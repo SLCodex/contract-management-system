@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 const { computeStatus } = require('../utils/status');
 
-const allowedStatuses = ['Draft', 'Active', 'Expiring Soon', 'Expired', 'Terminated'];
+const allowedStatuses = ['Draft', 'Pending Approval', 'Active', 'Expiring Soon', 'Expired', 'Terminated'];
 
 async function logActivity(userId, action, contractId) {
   await pool.query(
@@ -56,7 +56,7 @@ async function createContract(req, res) {
     start_date,
     end_date,
     amount,
-    status = 'Draft',
+    status = 'Pending Approval',
     description = '',
   } = req.body;
 
@@ -153,6 +153,44 @@ async function updateContract(req, res) {
   }
 }
 
+
+async function approveContract(req, res) {
+  const { id } = req.params;
+
+  try {
+    const existing = await pool.query('SELECT * FROM contracts WHERE id = $1', [id]);
+
+    if (!existing.rows.length) {
+      return res.status(404).json({ message: 'Contract not found' });
+    }
+
+    const contract = existing.rows[0];
+
+    if (contract.status !== 'Pending Approval') {
+      return res.status(400).json({ message: 'Only pending approval contracts can be approved' });
+    }
+
+    const approvedStatus = computeStatus(contract.end_date, 'Active');
+
+    const result = await pool.query(
+      `UPDATE contracts SET
+        status = $1,
+        approved_by = $2,
+        approved_at = NOW(),
+        updated_at = NOW()
+      WHERE id = $3
+      RETURNING *`,
+      [approvedStatus, req.user.id, id]
+    );
+
+    await logActivity(req.user.id, 'APPROVE_CONTRACT', Number(id));
+
+    return res.json({ data: result.rows[0] });
+  } catch (error) {
+    return res.status(500).json({ message: 'Could not approve contract', error: error.message });
+  }
+}
+
 async function deleteContract(req, res) {
   const { id } = req.params;
 
@@ -220,6 +258,7 @@ module.exports = {
   getContractById,
   createContract,
   updateContract,
+  approveContract,
   deleteContract,
   uploadContractFile,
   getDashboardStats,

@@ -10,7 +10,7 @@ const initial = {
   start_date: '',
   end_date: '',
   amount: '',
-  status: 'Draft',
+  status: 'Pending Approval',
   description: '',
 };
 
@@ -64,7 +64,7 @@ export default function ContractFormPage({ isEdit }) {
         <input type="date" value={form.end_date} onChange={(e)=>setForm({...form, end_date: e.target.value})} required />
         <input type="number" step="0.01" placeholder="Amount" value={form.amount} onChange={(e)=>setForm({...form, amount: e.target.value})} required />
         <select value={form.status} onChange={(e)=>setForm({...form, status: e.target.value})}>
-          <option>Draft</option><option>Active</option><option>Terminated</option>
+          <option>Draft</option><option>Pending Approval</option><option>Active</option><option>Terminated</option>
         </select>
         <textarea placeholder="Description" value={form.description || ''} onChange={(e)=>setForm({...form, description: e.target.value})} />
         <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
