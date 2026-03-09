@@ -40,6 +40,7 @@ export const api = {
   getContract: (id) => request(`/contracts/${id}`),
   createContract: (payload) => request('/contracts', { method: 'POST', body: JSON.stringify(payload) }),
   updateContract: (id, payload) => request(`/contracts/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  approveContract: (id) => request(`/contracts/${id}/approve`, { method: 'POST' }),
   deleteContract: (id) => request(`/contracts/${id}`, { method: 'DELETE' }),
   uploadContractFile: (id, file) => {
     const formData = new FormData();

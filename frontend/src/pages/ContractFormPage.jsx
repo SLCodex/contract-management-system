@@ -11,7 +11,7 @@ const initial = {
   start_date: '',
   end_date: '',
   amount: '',
-  status: 'Draft',
+  status: 'Pending Approval',
   description: '',
 };
 

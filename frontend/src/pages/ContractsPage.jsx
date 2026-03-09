@@ -34,6 +34,12 @@ export default function ContractsPage({ user }) {
     loadContracts();
   }
 
+  async function handleApprove(id) {
+    if (!confirm('Approve this contract?')) return;
+    await api.approveContract(id);
+    loadContracts();
+  }
+
   return (
     <div>
       <div className="row-between">
@@ -48,6 +54,7 @@ export default function ContractsPage({ user }) {
         <Select value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">All Status</option>
           <option>Draft</option>
+          <option>Pending Approval</option>
           <option>Active</option>
           <option>Expiring Soon</option>
           <option>Expired</option>
