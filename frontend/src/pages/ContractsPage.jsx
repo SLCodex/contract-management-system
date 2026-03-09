@@ -35,6 +35,7 @@ export default function ContractsPage({ user }) {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
   const [form, setForm] = useState(initialForm);
+  const [file, setFile] = useState(null);
   const [nextStatus, setNextStatus] = useState('Pending Approval');
 
   const modalTitle = useMemo(() => (isEditing ? 'Edit Contract' : 'Add Contract'), [isEditing]);
@@ -55,6 +56,7 @@ export default function ContractsPage({ user }) {
     setForm(initialForm);
     setSelectedContract(null);
     setIsEditing(false);
+    setFile(null);
   }
 
   function openCreateModal() {
@@ -88,11 +90,19 @@ export default function ContractsPage({ user }) {
 
   async function handleFormSubmit(e) {
     e.preventDefault();
+    let contractId = selectedContract?.id;
+
     if (isEditing && selectedContract) {
       await api.updateContract(selectedContract.id, form);
     } else {
-      await api.createContract(form);
+      const response = await api.createContract(form);
+      contractId = response.data.id;
     }
+
+    if (file && contractId) {
+      await api.uploadContractFile(contractId, file);
+    }
+
     setIsFormModalOpen(false);
     resetFormState();
     loadContracts();
@@ -184,6 +194,7 @@ export default function ContractsPage({ user }) {
                 ))}
               </Select>
               <Input placeholder="Description" value={form.description || ''} onChange={(e)=>setForm({...form, description: e.target.value})} />
+              <Input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
               <Button type="submit">Save Contract</Button>
             </form>
           </div>
