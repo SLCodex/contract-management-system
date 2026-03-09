@@ -1,4 +1,5 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Button, NavButton } from './ui';
 
 export default function Layout({ user, children }) {
   const location = useLocation();
@@ -13,13 +14,15 @@ export default function Layout({ user, children }) {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <h2>CMS</h2>
-        <p className="muted">{user?.name} ({user?.role})</p>
+        <div>
+          <h2>Contract CMS</h2>
+          <p className="muted">{user?.name} ({user?.role})</p>
+        </div>
         <nav>
-          <Link className={location.pathname === '/dashboard' ? 'active' : ''} to="/dashboard">Dashboard</Link>
-          <Link className={location.pathname.startsWith('/contracts') ? 'active' : ''} to="/contracts">Contracts</Link>
+          <NavButton isActive={location.pathname === '/dashboard'} to="/dashboard">Dashboard</NavButton>
+          <NavButton isActive={location.pathname.startsWith('/contracts')} to="/contracts">Contracts</NavButton>
         </nav>
-        <button onClick={logout} className="secondary">Logout</button>
+        <Button onClick={logout} variant="secondary">Logout</Button>
       </aside>
       <main className="content">{children}</main>
     </div>
