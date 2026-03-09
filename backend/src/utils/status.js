@@ -7,6 +7,18 @@ function computeStatus(endDate, currentStatus) {
     return 'Pending Approval';
   }
 
+  if (currentStatus === 'Draft') {
+    return 'Draft';
+  }
+
+  if (currentStatus === 'Expired') {
+    return 'Expired';
+  }
+
+  if (currentStatus === 'Expiring Soon') {
+    return 'Expiring Soon';
+  }
+
   const now = new Date();
   const end = new Date(endDate);
 
@@ -19,10 +31,6 @@ function computeStatus(endDate, currentStatus) {
 
   if (end <= in30Days) {
     return 'Expiring Soon';
-  }
-
-  if (currentStatus === 'Draft') {
-    return 'Draft';
   }
 
   return 'Active';
