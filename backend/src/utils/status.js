@@ -3,6 +3,10 @@ function computeStatus(endDate, currentStatus) {
     return 'Terminated';
   }
 
+  if (currentStatus === 'Pending Approval') {
+    return 'Pending Approval';
+  }
+
   const now = new Date();
   const end = new Date(endDate);
 

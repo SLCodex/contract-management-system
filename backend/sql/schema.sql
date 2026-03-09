@@ -16,9 +16,11 @@ CREATE TABLE IF NOT EXISTS contracts (
   start_date DATE NOT NULL,
   end_date DATE NOT NULL,
   amount NUMERIC(12, 2) NOT NULL,
-  status VARCHAR(20) NOT NULL CHECK (status IN ('Draft', 'Active', 'Expiring Soon', 'Expired', 'Terminated')),
+  status VARCHAR(20) NOT NULL CHECK (status IN ('Draft', 'Pending Approval', 'Active', 'Expiring Soon', 'Expired', 'Terminated')),
   description TEXT,
   file_path TEXT,
+  approved_by INTEGER REFERENCES users(id),
+  approved_at TIMESTAMP,
   created_by INTEGER REFERENCES users(id),
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()

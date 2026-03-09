@@ -68,14 +68,15 @@ Frontend runs on `http://localhost:5173`
 - `GET /api/contracts/:id`
 - `POST /api/contracts`
 - `PUT /api/contracts/:id` (Admin only)
+- `POST /api/contracts/:id/approve` (Admin only)
 - `DELETE /api/contracts/:id` (Admin only)
 - `POST /api/contracts/:id/upload`
 - `GET /api/contracts/dashboard/stats`
 
 ## Business Rules Implemented
 - JWT-protected contract routes
-- Admin: create, edit, delete
-- Staff: view, create, upload (no delete/edit)
+- Admin: create, edit, approve, delete
+- Staff: view, create, upload (no delete/edit/approve)
 - Expiring Soon = `end_date` within 30 days
 - Audit fields: `created_by`, `created_at`, `updated_at`
 

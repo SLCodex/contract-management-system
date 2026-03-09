@@ -6,6 +6,7 @@ const {
   getContractById,
   createContract,
   updateContract,
+  approveContract,
   deleteContract,
   uploadContractFile,
   getDashboardStats,
@@ -28,6 +29,7 @@ router.get('/', getContracts);
 router.get('/:id', getContractById);
 router.post('/', requireRole(['Admin', 'Staff']), createContract);
 router.put('/:id', requireRole(['Admin']), updateContract);
+router.post('/:id/approve', requireRole(['Admin']), approveContract);
 router.delete('/:id', requireRole(['Admin']), deleteContract);
 router.post('/:id/upload', requireRole(['Admin', 'Staff']), upload.single('file'), uploadContractFile);
 
