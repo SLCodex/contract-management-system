@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { api } from '../api/client';
+import { Badge, Card } from '../components/ui';
 
 export default function ContractDetailsPage() {
   const { id } = useParams();
@@ -13,13 +14,13 @@ export default function ContractDetailsPage() {
   if (!contract) return <p>Loading...</p>;
 
   return (
-    <div className="card details">
+    <Card className="details">
       <h1>{contract.title}</h1>
       <p><strong>Contract No:</strong> {contract.contract_no}</p>
       <p><strong>Vendor:</strong> {contract.vendor_name}</p>
       <p><strong>Department:</strong> {contract.department}</p>
       <p><strong>Amount:</strong> ${Number(contract.amount).toLocaleString()}</p>
-      <p><strong>Status:</strong> {contract.status}</p>
+      <p><strong>Status:</strong> <Badge>{contract.status}</Badge></p>
       <p><strong>Start Date:</strong> {contract.start_date?.slice(0,10)}</p>
       <p><strong>End Date:</strong> {contract.end_date?.slice(0,10)}</p>
       <p><strong>Description:</strong> {contract.description || '-'}</p>
@@ -29,8 +30,8 @@ export default function ContractDetailsPage() {
       <p><strong>Approved By (user id):</strong> {contract.approved_by || '-'}</p>
       <p><strong>Approved At:</strong> {contract.approved_at ? new Date(contract.approved_at).toLocaleString() : '-'}</p>
       {contract.file_path && (
-        <p><a href={`http://localhost:5000/${contract.file_path}`} target="_blank">Open File</a></p>
+        <p><a href={`http://localhost:5000/${contract.file_path}`} target="_blank" rel="noreferrer">Open File</a></p>
       )}
-    </div>
+    </Card>
   );
 }
